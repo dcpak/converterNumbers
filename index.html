@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Number Converter</title>
+  <style>
+    form label {
+      display: inline-block;
+      width: 400px;
+      padding-bottom: 10px;
+      text-align: right;
+    }
+
+    form label input {
+      width: 150px;
+    }
+  </style>
+  <script type="text/javascript">
+    const convert = function() {
+      const DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+      const elementsForm = document.forms['formData'].elements;
+      const numberIn = (elementsForm['numberIn'].value || '').toUpperCase();
+      const baseIn = parseInt(elementsForm['baseIn'].value || '0', 10);
+      const baseOut = parseInt(elementsForm['baseOut'].value || '0', 10);
+
+      let numberOut = '';
+
+      if(
+        numberIn !== null
+        && baseIn > 1
+        && baseOut > 1
+      ) {
+        let numberDecimal = [...numberIn]
+          .reverse()
+          .reduce((acc, digit, idx) => {
+            return acc + DIGITS.indexOf(digit) * Math.pow(baseIn, idx);
+          }, 0);
+        do {
+          numberOut = DIGITS[numberDecimal % baseOut] + numberOut;
+        } while(numberDecimal = Math.floor(numberDecimal / baseOut));
+      }
+      elementsForm['numberOut'].value = numberOut;
+    };
+  </script>
+</head>
+<body>
+<form name="formData">
+  <label>Liczba: <input type="text" name="numberIn" onkeyup="convert()" autocomplete="off" /></label>
+  <br /><label>Podstawa bazowa: <input type="number" name="baseIn" onkeyup="convert()" autocomplete="off" /></label>
+  <br /><label>Podstawa docelowa: <input type="number" name="baseOut" onkeyup="convert()" autocomplete="off" /></label>
+  <br /><label>Liczba docelowa: <input type="text" name="numberOut" readonly /></label>
+</form>
+</body>
+</html>
